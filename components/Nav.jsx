@@ -7,11 +7,14 @@ import { signIn, signOut, useSession, getProviders } from "next-auth/react";
 const Nav = () => {
   const isUserLoggedIn = true;
   const [providers, setProviders] = useState(null);
+  const [toggleDropDown, setToggleDropDown] = useState(false);
 
+  // To set the provider that runs only at the start
   useEffect(() => {
     const setProviders = async () => {
       const response = await getProviders();
 
+      // after getting the response, it is set to state
       setProviders(response);
     };
     setProviders();
@@ -20,6 +23,7 @@ const Nav = () => {
   return (
     <nav className="flex-between w-full mb-16 pt-3">
       <Link href="/" className="flex gap-2 flex-center">
+        {/* Web Logo */}
         <Image
           src="/assets/images/logo.svg"
           alt="Prompter Logo"
@@ -30,6 +34,7 @@ const Nav = () => {
         <p className="logo_text">Prompter</p>
       </Link>
 
+      {/* Desktop Navigation */}
       <div className="sm:flex hidden">
         {isUserLoggedIn ? (
           <div className="flex gap-3 md: gap-5">
@@ -74,8 +79,37 @@ const Nav = () => {
               height={37}
               className="rounded-full"
               alt="Profile"
-              onClick={() => {}}
+              onClick={() => setToggleDropDown((prev) => !prev)}
             />
+
+            {toggleDropDown && (
+              <div className="dropdown">
+                <Link
+                  className="dropdown_link"
+                  href="/profile"
+                  onClick={() => setToggleDropDown(false)}
+                >
+                  My Profile
+                </Link>
+                <Link
+                  className="dropdown_link"
+                  href="/create-prompt"
+                  onClick={() => setToggleDropDown(false)}
+                >
+                  Create Prompt
+                </Link>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setToggleDropDown(false);
+                    signOut();
+                  }}
+                  className="mt-5 w-full black_btn"
+                >
+                  Sign Out
+                </button>
+              </div>
+            )}
           </div>
         ) : (
           <>
