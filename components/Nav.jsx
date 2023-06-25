@@ -4,20 +4,22 @@ import Image from "next/image";
 import { useState, useEffect } from "react";
 import { signIn, signOut, useSession, getProviders } from "next-auth/react";
 
+// ref: https://next-auth.js.org/getting-started/rest-api#getpost-apiauthcallbackprovider
+
 const Nav = () => {
-  const isUserLoggedIn = true;
+  const { data: session } = useSession();
   const [providers, setProviders] = useState(null);
   const [toggleDropDown, setToggleDropDown] = useState(false);
 
   // To set the provider that runs only at the start
   useEffect(() => {
-    const setProviders = async () => {
+    const setUpProviders = async () => {
       const response = await getProviders();
 
       // after getting the response, it is set to state
       setProviders(response);
     };
-    setProviders();
+    setUpProviders();
   }, []);
 
   return (
@@ -33,10 +35,12 @@ const Nav = () => {
         />
         <p className="logo_text">Prompter</p>
       </Link>
+      {/* {alert(providers)} */}
+      {/* {alert(session?.user)} */}
 
       {/* Desktop Navigation */}
       <div className="sm:flex hidden">
-        {isUserLoggedIn ? (
+        {session?.user ? (
           <div className="flex gap-3 md: gap-5">
             <Link href="/create-prompt" className="black_btn">
               Create Post
@@ -44,7 +48,7 @@ const Nav = () => {
             <button className="outline_btn">Sign Out</button>
             <Link href="/profile">
               <Image
-                src="/assets/images/logo.svg"
+                src={session?.user.image}
                 width={37}
                 height={37}
                 className="rounded-full"
@@ -71,10 +75,10 @@ const Nav = () => {
 
       {/* Mobile Navigation */}
       <div className="sm:hidden flex relative">
-        {isUserLoggedIn ? (
+        {session?.user ? (
           <div className="flex">
             <Image
-              src="/assets/images/logo.svg"
+              src={session?.user.image}
               width={37}
               height={37}
               className="rounded-full"
