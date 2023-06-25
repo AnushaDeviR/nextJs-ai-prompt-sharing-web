@@ -12,35 +12,37 @@ const handler = NextAuth({
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     }),
   ],
-  //   updates to know which user is online
-  async session({ session }) {
-    const sessionUser = await User.findOne({
-      email: session.user.email,
-    });
-    session.user.id = sessionUser._id.toString();
-    return session;
-  },
-  async signIn({ profile }) {
-    try {
-      // serverless -> lambda -> only when it gets called
-      await connectToDB();
-      //   check if user exists:
-      const userExists = await User.findOne({
-        email: profile.email,
+  callbacks: {
+    //   updates to know which user is online
+    async session({ session }) {
+      const sessionUser = await User.findOne({
+        email: session.user.email,
       });
-      //   if not, then create a new user
-      if (!userExists) {
-        await User.create({
+      session.user.id = sessionUser._id.toString();
+      return session;
+    },
+    async signIn({ profile }) {
+      try {
+        // serverless -> lambda -> functions only when it gets called
+        await connectToDB();
+        //   check if user exists:
+        const userExists = await User.findOne({
           email: profile.email,
-          username: profile.name.replace(" ", "").toLowerCase(),
-          image: profile.picture,
         });
+        //   if not, then create a new user
+        if (!userExists) {
+          await User.create({
+            email: profile.email,
+            username: profile.name.replace(" ", "").toLowerCase(),
+            image: profile.picture,
+          });
+        }
+        return true;
+      } catch (error) {
+        console.error(error);
+        return false;
       }
-      return true;
-    } catch (error) {
-      console.error(error);
-      return false;
-    }
+    },
   },
 });
 
