@@ -16,6 +16,5 @@ const PromptSchema = new Schema({
 });
 
 const Prompt = models.Prompt || model("Prompt", PromptSchema);
-console.log("[CMD] 🐨 | file: prompt.js:19 | Prompt:", Prompt);
 
 export default Prompt;
