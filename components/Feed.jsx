@@ -15,13 +15,15 @@ const PromptCardList = ({ data, handleTagClick }) => {
     </div>
   );
 };
+
+// TODO: Implement Search by prompt, username, tag
 const Feed = () => {
   const [searchText, setSearchText] = useState("");
   const [posts, setPosts] = useState([]);
 
   const handleSearchChange = (e) => {};
 
-  console.log(posts);
+  console.log("[CMD] Posts retrieved: ", posts);
 
   const fetchPosts = async () => {
     const response = await fetch("/api/prompt");

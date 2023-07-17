@@ -1,6 +1,7 @@
 import React from "react";
 import PromptCard from "./PromptCard";
 
+// TODO: implement viewing of other profiles
 const Profile = ({ name, desc, data, handleDelete, handleEdit }) => {
   return (
     <section className="w-full">
